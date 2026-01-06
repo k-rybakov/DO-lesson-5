@@ -1,0 +1,19 @@
+image:
+  repository: 073264654877.dkr.ecr.eu-central-1.amazonaws.com/lesson-7-ecr
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 8000
+
+ingress:
+  enabled: false
+
+config:
+  POSTGRES_PORT: 5432
+  POSTGRES_HOST: db 
+  POSTGRES_PORT: 5432
+  POSTGRES_USER: django_user
+  POSTGRES_DB: django_db
+  POSTGRES_PASSWORD: Passw0rd
