@@ -64,3 +64,20 @@ output "eks_node_role_arn" {
   description = "IAM role ARN for EKS Worker Nodes"
   value       = module.eks.eks_node_role_arn
 }
+
+#--------Jenkins--------------
+
+output "jenkins_release" {
+  value = module.jenkins.jenkins_release_name
+}
+
+output "jenkins_namespace" {
+  value = module.jenkins.jenkins_namespace
+}
+
+#---------ArgoCD-----
+
+output "argo_cd_pass" {
+  description = "argo-cd pass"
+  value       = module.argo_cd.admin_password
+}

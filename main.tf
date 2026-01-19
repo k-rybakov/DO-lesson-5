@@ -28,3 +28,21 @@ module "eks" {
   max_size        = 2
   min_size        = 1
 }
+
+module "jenkins" {
+  source       = "./modules/jenkins"
+  cluster_name = module.eks.eks_cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.oidc_provider_url
+  depends_on        = [module.eks]
+  providers    = {
+    helm       = helm
+    kubernetes = kubernetes
+  }
+}
+
+module "argo_cd" {
+  source       = "./modules/argo_cd"
+  namespace    = "argocd"
+  chart_version = "5.46.4"
+}
