@@ -30,6 +30,89 @@
 Окремий модуль створює репозиторій контейнерів у ECR з автоматичним скануванням (scan_on_push).
 Також додається IAM-політика, яка дозволяє читати та завантажувати образи в репозиторій.
 
+### Модуль rds
+
+Модуль розгортає реляційну базу даних на AWS RDS з підтримкою двох режимів:
+
+**Режим 1: Стандартний RDS (use_aurora = false)**
+- Один екземпляр RDS (однозональний або Multi-AZ)
+- Підходить для невеликих проектів та розробки
+- Менш витратний, але менша масштабованість
+
+**Режим 2: Aurora Cluster (use_aurora = true)**
+- Повнофункціональний кластер з writer та reader інстансами
+- Автоматична репліка та failover
+- Масштабована читання через reader endpoint
+- Рекомендується для production
+
+#### Спільні ресурси
+- DB Subnet Group — для розміщення БД в приватних підмережах
+- Security Group — обмежена CIDR блоком VPC для безпеки
+- Parameter Group — налаштування для обраного режиму (Aurora або стандартний RDS)
+
+#### Основні змінні
+- `use_aurora` — вибір між Aurora (true) та стандартним RDS (false)
+- `vpc_cidr_block` — CIDR блок VPC для обмеження ingress правила
+- `db_name` — ім'я бази даних
+- `username` / `password` — облікові дані адміністратора
+- `instance_class` — розмір інстанса (напр. db.t3.micro)
+- `aurora_replica_count` — кількість reader реплік для Aurora
+- `parameters` — custom параметри для Parameter Group
+- `publicly_accessible` — чи доступна БД з публічної мережі
+
+#### Приклад використання Aurora
+```hcl
+module "rds" {
+  source = "./modules/rds"
+  
+  use_aurora        = true
+  aurora_replica_count = 2
+  name              = "app-db"
+  db_name           = "production"
+  username          = "admin"
+  password          = var.db_password
+  instance_class    = "db.t3.medium"
+  engine_version_cluster = "15.3"
+  
+  vpc_id            = module.vpc.vpc_id
+  vpc_cidr_block    = module.vpc.vpc_cidr_block
+  subnet_private_ids = module.vpc.private_subnet_ids
+  
+  tags = local.tags
+}
+```
+
+#### Приклад використання стандартного RDS
+```hcl
+module "rds" {
+  source = "./modules/rds"
+  
+  use_aurora     = false
+  name           = "dev-db"
+  db_name        = "development"
+  username       = "admin"
+  password       = var.db_password
+  instance_class = "db.t3.micro"
+  multi_az       = false
+  
+  vpc_id            = module.vpc.vpc_id
+  vpc_cidr_block    = module.vpc.vpc_cidr_block
+  subnet_private_ids = module.vpc.private_subnet_ids
+  
+  tags = local.tags
+}
+```
+
+#### Outputs
+- `aurora_cluster_endpoint` — write endpoint для Aurora
+- `aurora_reader_endpoint` — read-only endpoint для Aurora
+- `rds_endpoint` — endpoint для стандартного RDS
+- `database_port` — порт БД (5432 для PostgreSQL)
+- `aurora_connection_url` — connection string для Aurora
+- `rds_connection_url` — connection string для RDS
+- `database_name` — ім'я БД
+- `database_username` — ім'я користувача адміністратора
+
 ## Команди для ініціалізації та запуску
 
 ```

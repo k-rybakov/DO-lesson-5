@@ -102,3 +102,8 @@ variable "parameter_group_family_rds" {
   type    = string
   default = "postgres15"
 }
+
+variable "vpc_cidr_block" {
+  description = "CIDR блок VPC для обмеження доступу до RDS"
+  type        = string
+}
