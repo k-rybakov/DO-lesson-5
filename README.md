@@ -70,3 +70,22 @@ terraform apply
 ```
 terraform init -reconfigure
 ```
+
+## Перевірка Jenkins
+
+У веб-інтерфейсі Jenkins після розгортання з’явиться джоба seed-job (взята з values Jenkins). Натискаю Build Now, після чого можна подивитись:
+
+1. логи збірки
+2. що було закомічено в інфра-репозиторій
+3. чи з’явився новий образ у ECR
+
+## Перегляд змін в Argo CD
+
+У UI Argo CD можна відстежити оновлення Deployment’у. Після синхронізації з’являється новий pod
+
+Якщо потрібно перевірити вручну:
+
+```
+kubectl get pods
+kubectl logs <pod-name>
+```
