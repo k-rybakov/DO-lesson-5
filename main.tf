@@ -87,3 +87,9 @@ module "rds" {
     Project     = "myapp"
   }
 }
+
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  eks_dependency = module.eks
+}

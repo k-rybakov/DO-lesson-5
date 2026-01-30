@@ -81,3 +81,17 @@ output "argo_cd_pass" {
   description = "argo-cd pass"
   value       = module.argo_cd.admin_password
 }
+
+
+#---------Monitoring -----
+
+output "monitoring_namespace" {
+  description = "Namespace де встановлено моніторинг"
+  value       = module.monitoring.prometheus_namespace
+}
+
+output "grafana_admin_password" {
+  description = "Пароль admin для Grafana"
+  value       = "goit-2025-grafana"  # з values-grafana.yaml
+  sensitive   = true
+}

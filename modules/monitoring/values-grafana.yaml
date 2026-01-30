@@ -1,0 +1,40 @@
+# ===========================================
+# Конфігурація Grafana (мінімальна для dev/test)
+# ===========================================
+
+# --- Persistence ---
+persistence:
+  enabled: false
+
+# --- Admin credentials ---
+adminUser: admin
+adminPassword: goit-2025-grafana
+
+# --- Service ---
+service:
+  type: ClusterIP
+
+# --- Мінімальні ресурси ---
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 25m
+  limits:
+    memory: 128Mi
+    cpu: 50m
+
+# --- Datasources ---
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring.svc.cluster.local
+        access: proxy
+        isDefault: true
+
+# --- Sidecar вимкнено (зменшує ресурси) ---
+sidecar:
+  dashboards:
+    enabled: false
