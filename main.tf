@@ -70,7 +70,7 @@ module "rds" {
   allocated_storage          = 20
   db_name                    = "myapp"
   username                   = "postgres"
-  password                   = "admin123complex_passw@rd"
+  password                   = var.db_password"admin123complex_passw@rd"
   subnet_private_ids         = module.vpc.private_subnets
   subnet_public_ids          = module.vpc.public_subnets
   publicly_accessible        = true
